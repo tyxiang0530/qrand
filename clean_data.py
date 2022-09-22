@@ -4,9 +4,10 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import json
 from matplotlib.ticker import MultipleLocator
 # %%
-test_path = "C:\\Users\\TXiang\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0915_initialtests\\run_1.csv"
+test_path = "C:\\Users\\tyxia\\OneDrive - Pomona College\Pomona\\randomness_proj\\data\\xiang_0915_initialtests\\run_1.csv"
 # %%
 def clean_csv(csv_in):
     """cleans up the raw input from the CCD and parses out the settings
@@ -32,6 +33,7 @@ def clean_csv(csv_in):
             settings_dict[key] = value
     data_df = pd.read_csv(csv_in, skiprows = 3)
     data_df = data_df.drop(['Entry number', 'Ch 4', 'Ch 5', 'Ch 6', 'Ch 7', 'Ch 8'], axis = 1)
+    data_df.to_csv(csv_in.split('.cs')[0] + '_clean.csv')
     
     return data_df, settings_dict
 # %%
@@ -79,7 +81,7 @@ def plot_counts_timesteps(clean_df_in, channel_1, channel_2):
 
     plt.xlabel('timestep', labelpad = 10)
     plt.ylabel('photon counts', labelpad = 10)
-    plt.legend(loc = 'upper right')
+    plt.legend(loc = 'upper left')
     plt.show()
 # %%
 def count_histogram(channel, clean_df_in):
@@ -144,10 +146,81 @@ def graph_sums(data_df, channel_1, channel_2):
 
     plt.xlabel('timestep buckets', labelpad = 10)
     plt.ylabel('photon counts', labelpad = 10)
-    plt.legend(loc = 'upper right')
+    plt.legend(loc = 'upper left')
     plt.show()
+    
+
 # %%
-data_df, _ = clean_csv(test_path)
+def format_for_tests(clean_data, channel_string, output_loc):
+    # format 1: 3 channel: 7 bits:
+    # channel 1, 2, 3: 000, 001, 010
+    # channel 1 + 2: 011
+    # channel 2 + 3: 100
+    # channel 1 + 3: 101
+    # channel 1 + 2 + 3: 110
+    
+    # format 2: 2 channel
+    # channel 1, 2: 00, 01
+    # channel 1 + 2, 10
+    
+    # format 3: 2 channel, if there is coincidence, remove the trial
+    # channel 1: 1
+    # channel 2: 0
+    # if channel 1 + 3 or channel 2 + 3: kill
+    write_arr = []
+    if channel_string == '3':
+        for index, row in clean_data.iterrows():
+            if row['Ch 1'] > 0 and row['Ch 2'] == 0 and row['Ch 3'] == 0:
+                write_arr.append("000")
+            elif row['Ch 1'] == 0 and row['Ch 2'] > 0 and row['Ch 3'] == 0:
+                write_arr.append("001")
+            elif row['Ch 1'] == 0 and row['Ch 2'] > 0 and row['Ch 3'] == 0:
+                write_arr.append("010")
+            elif row['Ch 1'] > 0 and row['Ch 2'] > 0 and row['Ch 3'] == 0:
+                write_arr.append("011")
+            elif row['Ch 1'] == 0 and row['Ch 2'] > 0 and row['Ch 3'] > 0:
+                write_arr.append("100")
+            elif row['Ch 1'] > 0 and row['Ch 2'] == 0 and row['Ch 3'] > 0:
+                write_arr.append("101")
+            else:
+                write_arr.append("110")
+                
+    if channel_string == '2':
+        for index, row in clean_data.iterrows():
+            if row['Ch 1'] > 0 and row['Ch 2'] == 0:
+                write_arr.append("00")
+            elif row['Ch 1'] == 0 and row['Ch 2'] > 0:
+                write_arr.append("01")
+            else:
+                write_arr.append("10")
+                
+    if channel_string == 'coincidence':
+        for index, row in clean_data.iterrows():
+            if row['Ch 1'] > 0 and row['Ch 2'] == 0 and row['Ch 3'] == 0:
+                write_arr.append("0")
+            elif row['Ch 1'] == 0 and row['Ch 2'] > 0 and row['Ch 3'] == 0:
+                write_arr.append("1")
+    
+    # start out by just adding to concatenated string????
+    out_string = ""
+    for val in write_arr:
+        out_string += val
+        
+    print("Length of generated number: ", len(out_string))
+        
+    with open(output_loc, "w") as outfile:
+        outfile.write(out_string)
+                
+    
+# %%
+data_df, settings = clean_csv(test_path)
+plot_counts_timesteps(data_df, 2, 3)
 count_histogram(2, data_df)
+count_histogram(3, data_df)
 graph_sums(data_df, 2, 3)
+format_for_tests(data_df, "3", "C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0915_initialtests\\run_1_binary.json")
+# %%
+print(settings)
+# %%
+data_df.head()
 # %%
