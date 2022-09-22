@@ -205,11 +205,12 @@ def format_for_tests(clean_data, channel_string, output_loc):
     out_string = ""
     for val in write_arr:
         out_string += val
+    ascii_out = out_string.encode('ascii')
         
     print("Length of generated number: ", len(out_string))
         
-    with open(output_loc, "w") as outfile:
-        outfile.write(out_string)
+    with open(output_loc, "wb") as outfile:
+        outfile.write(ascii_out)
                 
     
 # %%
