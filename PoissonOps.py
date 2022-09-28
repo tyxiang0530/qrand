@@ -23,7 +23,7 @@ def ecdf(data):
     sy = np.arange(1,n+1)/n
     return sx,sy
 
-def simulate_poisson(data_in, channel):
+def simulate_poisson(data_in, channel, outdir = None, save = False):
     channel_string = 'Ch ' + str(channel)
     data_np = data_in[channel_string].to_numpy()
     fig, ax = plt.subplots(figsize=(6,4))
@@ -49,6 +49,12 @@ def simulate_poisson(data_in, channel):
             ax.step(rcdf_x,rcdf_y, color='grey',alpha=0.35,zorder=3)
 
     ax.legend(loc='upper left')
+    if save == True:
+        fname = "poisson_closeness.png"
+        outpath = outdir + "\\" + fname
+        plt.savefig(outpath)
+        plt.show()
+        return fname
     plt.show()
     
 # %%
@@ -96,7 +102,7 @@ def chi_squared(data_in, channel):
     chi_stat = ((obs_counts - exp_counts)**2/exp_counts).sum()
 
 # %%
-def get_poisson_var(data_np, channel_in):
+def get_poisson_var(data_np, channel_in, outdir = None, save = False):
     counts = data_np['Ch ' + str(channel_in)]
     mu = counts.mean()
     x = np.arange(0, 100, 1)
@@ -104,11 +110,19 @@ def get_poisson_var(data_np, channel_in):
     poisson_cdf = poisson.cdf(x, mu)
     plt.plot(x, poisson_pmf, ms=8, label='poisson pmf')
     plt.plot(x, poisson_cdf, label = 'poisson cdf')
-    plt.title("Fitted Poissonian PMF and CDF")
     plt.legend()
+    plt.title("Fitted Poissonian PMF and CDF")
     
-    return mu, poisson_cdf, poisson_pmf
-
+    if save:
+        fname = "poiss_pmf_cdf.png"
+        outpath = outdir + "\\" + fname
+        plt.savefig(outpath)
+        plt.show()
+        
+        return mu, poisson_cdf, poisson_pmf, fname
+    plt.show()
+    
+    return mu, poisson_cdf, poisson_pmf, fname
 # %%
 def get_midpt(poisson_cdf):
     for idx in range(0, len(poisson_cdf)):

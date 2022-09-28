@@ -1,14 +1,11 @@
 # %%
-from distutils.command.clean import clean
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import json
 from scipy.stats import poisson
 from matplotlib.ticker import MultipleLocator
 # %%
-def plot_counts_timesteps(clean_df_in, channel_1, channel_2, save = False, outpath = None):
+def plot_counts_timesteps(clean_df_in, channel_1, channel_2, save = False, outdir = None):
     data_df = clean_df_in
     x_vals = np.arange(0, len(data_df), 1)
     channel_string_1 = 'Ch ' + str(channel_1)
@@ -37,13 +34,13 @@ def plot_counts_timesteps(clean_df_in, channel_1, channel_2, save = False, outpa
 
 
     plt.figure(figsize=(xsize, ysize))
-    plt.scatter(x_vals[0:50], 
-                data_df[channel_string_1][0:50], 
+    plt.scatter(x_vals, 
+                data_df[channel_string_1], 
                 label = channel_string_1 + " counts")
-    plt.scatter(x_vals[0:50], 
-                data_df[channel_string_2][0:50], 
+    plt.scatter(x_vals, 
+                data_df[channel_string_2], 
                 label = channel_string_2 + " counts")
-    plt.title("Photon Counts Over Integration Timesteps.")
+    plt.title("Photon Counts Over Single Integration Timesteps.")
 
     ax = plt.gca()
     # ax.xaxis.set_minor_locator(MultipleLocator(.005))
@@ -52,28 +49,21 @@ def plot_counts_timesteps(clean_df_in, channel_1, channel_2, save = False, outpa
     plt.xlabel('timestep', labelpad = 10)
     plt.ylabel('photon counts', labelpad = 10)
     plt.legend(loc = 'upper left')
-    plt.show()
     
     if save:
+        fname = "counts_timesteps.png"
+        outpath = outdir + "\\" + fname
         plt.savefig(outpath)
+        plt.show()
+        return fname
+    plt.show()
 # %%
-def count_histogram_rough(channel, clean_df_in, save = False, outpath = None):
+def count_histogram_abs(channel, clean_df_in, save = False, outdir = None):
     # adaptable binning and bucketing
     channel_string = 'Ch ' + str(channel)
     data_np = clean_df_in[channel_string].to_numpy()
     counts = np.bincount(data_np)
-    bin_start = 0
-    bin_finish = len(counts)
     
-    for i in range(len(counts)):
-        if counts[i] != 0:
-            bin_start = i
-            
-    for i in range(len(counts)-1, -1, -1):
-        if counts[i] != 0:
-            bin_finish = i + 1
-    print(bin_start)
-    print(bin_finish)
     fig, ax = plt.subplots()
     ax.bar(range(len(counts)), counts, width=0.6, align='center')
     ax.set(xticks=range(0, 70), xlim=[0, 70])
@@ -81,29 +71,22 @@ def count_histogram_rough(channel, clean_df_in, save = False, outpath = None):
     ax.set_ylabel("Frequency")
     plt.locator_params(axis='x', nbins=20)
     
-    plt.show()
     if save:
+        fname = "histogram_abs.png"
+        outpath = outdir + "\\" + fname
         plt.savefig(outpath)
+        plt.show()
+        return fname
+    plt.show()
         
 # %%
-def count_histogram_norm(channel, clean_df_in, save = False, outpath = None):
+def count_histogram_norm(channel, clean_df_in, save = False, outdir = None):
     # adaptable binning and bucketing
     channel_string = 'Ch ' + str(channel)
     data_np = clean_df_in[channel_string].to_numpy()
     total_counts = clean_df_in[channel_string].sum()
     counts = np.bincount(data_np) / total_counts
-    bin_start = 0
-    bin_finish = len(counts)
     
-    for i in range(len(counts)):
-        if counts[i] != 0:
-            bin_start = i
-            
-    for i in range(len(counts)-1, -1, -1):
-        if counts[i] != 0:
-            bin_finish = i + 1
-    print(bin_start)
-    print(bin_finish)
     fig, ax = plt.subplots()
     ax.bar(range(len(counts)), counts, width=0.6, align='center')
     ax.set(xticks=range(0, 70), xlim=[0, 70])
@@ -111,11 +94,16 @@ def count_histogram_norm(channel, clean_df_in, save = False, outpath = None):
     ax.set_ylabel("Frequency (Normalized)")
     plt.locator_params(axis='x', nbins=20)
     
-    plt.show()
     if save:
-        plt.savefig(outpath)
+        fname = "histogram_norm.png"
+        outdir = outdir + "\\" + fname
+        plt.savefig(outdir)
+        plt.show()
+        return fname
+    
+    plt.show()
 # %%
-def graph_sums(data_df, channel_1, channel_2, save = False, outpath = None):
+def graph_sums(data_df, channel_1, channel_2, save = False, outdir = None):
     num_bins = 50
     n = int(len(data_df) / num_bins)
     x_vals = np.arange(0, num_bins, 1)
@@ -164,7 +152,14 @@ def graph_sums(data_df, channel_1, channel_2, save = False, outpath = None):
     plt.xlabel('timestep buckets', labelpad = 10)
     plt.ylabel('photon counts', labelpad = 10)
     plt.legend(loc = 'upper left')
+
+    if save:
+        fname = "bucket_counts.png"
+        outpath = outdir + "\\" + fname
+        plt.savefig(outpath)
+        plt.show()
+        return fname
     plt.show()
     
-    if save:
-        plt.savefig(outpath)
+
+        
