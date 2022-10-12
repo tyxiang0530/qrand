@@ -49,12 +49,14 @@ def simulate_poisson(data_in, channel, outdir = None, save = False):
             ax.step(rcdf_x,rcdf_y, color='grey',alpha=0.35,zorder=3)
 
     ax.legend(loc='upper left')
+    plt.title("Measures of Poissonian Fit for Channel" + str(channel))
     if save == True:
-        fname = "poisson_closeness.png"
+        fname = "poisson_closeness" + str(channel) + ".png"
         outpath = outdir + "\\" + fname
         plt.savefig(outpath)
         plt.show()
         return fname
+    
     plt.show()
     
 # %%
@@ -91,9 +93,9 @@ def lill_poisson(data_in, channel,sim=10000,seed=10):
     return ks_obs, p_val, sa
 
 # %%
-def chi_squared(data_in, channel):
+def chi_squared(obs, channel):
     channel_string = 'Ch ' + str(channel)
-    channel_counts = data_in[channel_string]
+    channel_counts = obs[channel_string]
     channel_counts['quantile'] = poisson.cdf(obs.mean(),obs)
     channel_counts['quin'] = np.floor(channel_counts['quantile']/0.2)
 
@@ -111,10 +113,10 @@ def get_poisson_var(data_np, channel_in, outdir = None, save = False):
     plt.plot(x, poisson_pmf, ms=8, label='poisson pmf')
     plt.plot(x, poisson_cdf, label = 'poisson cdf')
     plt.legend()
-    plt.title("Fitted Poissonian PMF and CDF")
+    plt.title("Fitted Poissonian PMF and CDF for Channel" + str(channel_in))
     
     if save:
-        fname = "poiss_pmf_cdf.png"
+        fname = "poiss_pmf_cdf_" + str(channel_in) + ".png"
         outpath = outdir + "\\" + fname
         plt.savefig(outpath)
         plt.show()
