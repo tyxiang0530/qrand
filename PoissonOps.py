@@ -3,11 +3,9 @@ import CleanData as cd
 from importlib import reload
 from scipy.stats import poisson
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 import numpy as np
 import DataExplore as de
 import math
-from scipy.special import factorial
 
 reload(cd)
 reload(de)

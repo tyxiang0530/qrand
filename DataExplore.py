@@ -2,8 +2,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import poisson
-from matplotlib.ticker import MultipleLocator
 # %%
 def plot_counts_timesteps(clean_df_in, channel_1, channel_2, save = False, outdir = None):
     data_df = clean_df_in
@@ -103,10 +101,9 @@ def count_histogram_norm(channel, clean_df_in, save = False, outdir = None):
     
     plt.show()
 # %%
-def graph_sums(data_df, channel_1, channel_2, save = False, outdir = None):
-    num_bins = 50
+def graph_sums(data_df, channel_1, channel_2, save = False, outdir = None, bucket_size=50):
+    num_bins = bucket_size
     n = int(len(data_df) / num_bins)
-    x_vals = np.arange(0, num_bins, 1)
     
     channel_string_1 = 'Ch ' + str(channel_1)
     channel_string_2 = 'Ch ' + str(channel_2)
@@ -137,10 +134,10 @@ def graph_sums(data_df, channel_1, channel_2, save = False, outdir = None):
 
 
     plt.figure(figsize=(xsize, ysize))
-    plt.scatter(x_vals, 
+    plt.scatter(range(len(channel_1_bin)), 
                 channel_1_bin, 
                 label = channel_string_1 + " counts")
-    plt.scatter(x_vals, 
+    plt.scatter(range(len(channel_2_bin)), 
                 channel_2_bin, 
                 label = channel_string_2 + " counts")
     plt.title("Photon Counts Over Bucketed Integration Timesteps")

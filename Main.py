@@ -6,14 +6,14 @@ from importlib import reload
 import os
 from jinja2 import Environment, FileSystemLoader
 import time
-from weasyprint import HTML, CSS
 
+# %%
 reload(de)
 reload(po)
 reload(cd)
 
 # %%
-def gen_report(csv_in):
+def gen_report(csv_in, title):
     input_filename = csv_in.split('\\')[-1].split('.')[0]
     timestr = time.strftime("%Y%m%d-%H%M%S")
     env = Environment(loader=FileSystemLoader("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\qrand\\"))
@@ -24,7 +24,6 @@ def gen_report(csv_in):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    
     data_df, settings = cd.clean_csv(csv_in)
     hist_abs1 = de.count_histogram_abs(3, data_df, save = True, outdir = output_dir)
     hist_norm1 = de.count_histogram_norm(3, data_df, save = True, outdir = output_dir)
@@ -38,7 +37,7 @@ def gen_report(csv_in):
     p_ecdf2 = po.simulate_poisson(data_df, 1, outdir = output_dir, save = True)
     
     html = template.render(page_title_text='General Visualizations for Experimental Run',
-                           title_text='Photon Statistics for Randomness Trial',
+                           title_text='Photon Statistics for Randomness Trial: ' + title,
                            description_title ='This report covers basic statistics on photon arrival times, \
                                photon counts, and coincidences. The settings used for this trial are: ' + \
                                    str(settings) + '. The following report was generated at: ' + timestr,
@@ -84,13 +83,6 @@ def gen_report(csv_in):
     html_out = output_dir + '\\data_exploration_report_' + input_filename + '.html'
     with open(html_out, 'w') as f:
         f.write(html)
-        
-    css = CSS(string='''
-              @page {size: A4; margin: 1cm;}
-              th, td {border: 1px solid black;}''')
-
-    HTML(html_out).write_pdf(output_dir + '\\data_exploration_report_' + input_filename + '.pdf', stylesheets=[css])
-
 
 # %%
 def main(csv_in):
@@ -104,6 +96,9 @@ def main(csv_in):
 # format_for_tests(data_df, "3", "C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0915_initialtests\\run_1_binary.json")
 
 # %%
-gen_report("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_1007_robustness_tests\\change_over_time_test_flashlight.csv")
+gen_report("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_1007_robustness_tests\\laser\\change_over_time_test_laser.csv", "Laser Robustness Tests")
 # main("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0922_runs\\no_bs_down_convert_1.csv")
+# %%
+data_df, settings = cd.clean_csv("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_1007_robustness_tests\\laser\\change_over_time_test_laser.csv")
+ts_bucket = de.graph_sums(data_df, 1, 3, bucket_size = 200)
 # %%
