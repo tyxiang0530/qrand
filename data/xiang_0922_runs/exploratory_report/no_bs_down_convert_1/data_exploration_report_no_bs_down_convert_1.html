@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>General Visualizations for Experimental Run</title>
+    </head>
+    <body>
+            <h1>Photon Statistics for Randomness Trial</h1>
+            <p>This report covers basic statistics on photon arrival times,                                photon counts, and coincidences. The settings used for this trial are: {'clock rate (hz)': 800.0, 'sample integration time (s)': 0.00125}. The following report was generated at: 20220929-083023</p>
+            <h2>Unnormalized Counts Across Integration Times</h2>
+            <img src="histogram_abs.png">
+            <p>The above graph displays the distribution of counts that occur                                for each integration timestep (0.00125)</p>
+            <h2>Normalized Counts Across Integration Times</h2>
+            <img src="histogram_norm.png">
+            <p>The above graph displays the distribution of counts that occur for                                each integration timestep (0.00125)                                    normalized between 0 and 1</p>
+            <h2>Photon Counts Over all Integration Timesteps</h2>
+            <img src="counts_timesteps.png">
+            <p>The amount of photons we count at each integration timestep</p>
+            <h2>Photon Counts Over all Bucketed Integration Timesteps</h2>
+            <img src="bucket_counts.png">
+            <p>The total amount of photons we count at a summation of integration timesteps</p>
+            <h2>ECDF Tests</h2>
+            <img src="poisson_closeness.png">
+            <p>A graphical measure of how close our counts are to a Poissonian distribution</p>
+            <h2>Fitted Poissonian PMF and CDF</h2>
+            <img src="poiss_pmf_cdf.png">
+            <p>The probability mass function and cumulative distribution function                                for a Poissonian fitted to the data</p>
+
+    </body>
+</html>
