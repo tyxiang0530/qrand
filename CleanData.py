@@ -32,7 +32,7 @@ def clean_csv(csv_in):
             settings_dict[key] = value
             
     data_df = pd.read_csv(csv_in, skiprows = 3)
-    data_df = data_df.drop(['Ch 4', 'Ch 5', 'Ch 6', 'Ch 7', 'Ch 8'], axis = 1)
+    data_df = data_df.drop(['Ch 6', 'Ch 7', 'Ch 8'], axis = 1)
     data_df['Entry number'] = data_df['Entry number'] * settings_dict['sample integration time (s)']
     
     data_df.to_csv(csv_in.split('.cs')[0] + '_clean.csv', index = False)

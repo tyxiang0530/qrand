@@ -102,10 +102,11 @@ def chi_squared(obs, channel):
     chi_stat = ((obs_counts - exp_counts)**2/exp_counts).sum()
 
 # %%
-def get_poisson_var(data_np, channel_in, outdir = None, save = False):
-    counts = data_np['Ch ' + str(channel_in)]
+def get_poisson_var(df_in, channel_in, outdir = None, save = False):
+    counts = df_in['Ch ' + str(channel_in)]
     mu = counts.mean()
-    x = np.arange(0, 100, 1)
+    upper_bound = counts.max()
+    x = np.arange(0, upper_bound, 0.001)
     poisson_pmf = poisson.pmf(x, mu)
     poisson_cdf = poisson.cdf(x, mu)
     plt.plot(x, poisson_pmf, ms=8, label='poisson pmf')
@@ -119,10 +120,10 @@ def get_poisson_var(data_np, channel_in, outdir = None, save = False):
         plt.savefig(outpath)
         plt.show()
         
-        return mu, poisson_cdf, poisson_pmf, fname
+        return mu, poisson_cdf, poisson_pmf, x, fname
     plt.show()
     
-    return mu, poisson_cdf, poisson_pmf, fname
+    return mu, poisson_cdf, poisson_pmf, x
 # %%
 def get_midpt(poisson_cdf):
     for idx in range(0, len(poisson_cdf)):
@@ -134,3 +135,44 @@ def get_poisson_midpt(data_np, channel_in):
     mu, poisson_cdf, poisson_pmf = get_poisson_var(data_np, channel_in)
     return get_midpt(poisson_cdf)
 
+# %%
+def get_poisson_quarter(data_np, channel_in):
+    mu_mid, poisson_cdf, poisson_pmf = get_poisson_var(data_np, channel_in)
+    first_half = poisson[0:mu_mid]
+    second_half = poisson[mu_mid:-1]
+    return get_midpt(poisson_cdf)
+
+# %%
+# compute big trapezoid, then iterate through little trapezoids until you get to desired area
+def cut_poisson(data_np, channel_in, plot = False):
+    mu, poisson_cdf, poisson_pmf, xrange = get_poisson_var(data_np, channel_in)
+    print(poisson_cdf[2000])
+    pt1 = 56
+    pt2 = 0
+    pt3 = 0
+    test_arr = []
+    for idx in range(len(poisson_cdf)):
+        if (poisson_cdf[idx] - np.float64(0.25) <= 0.024 and poisson_cdf[idx] - np.float64(0.25) >= 0) or \
+            (poisson_cdf[idx] - np.float64(0.25) >= -0.024 and poisson_cdf[idx] - np.float64(0.25) <= 0):
+            pt1 = idx
+        elif poisson_cdf[idx] - 0.5 <= 0.0001 and poisson_cdf[idx] - 0.25 >= -0.0001:
+            pt2 = idx
+        elif poisson_cdf[idx] - 0.75 <= 0.0001 and poisson_cdf[idx] - 0.25 >= -0.0001:
+            pt3 = idx
+            
+    if plot:
+        plt.plot(xrange, poisson_pmf)
+        plt.axvline(xrange[pt1], 0, 1, ls = "--")
+        plt.axvline(xrange[pt2], 0, 1, ls = "--")
+        plt.axvline(xrange[pt3], 0, 1, ls = "--")
+
+    return pt1, pt2, pt3, xrange
+# %%
+dir = "data\\1129_bs_in_nofilter\\"
+file = dir + "run1.csv"
+# %%
+data_df, data_settings = cd.clean_csv(file)
+data_df.head()
+# %%
+cut_poisson(data_df, 3, plot = True)
+# %%
