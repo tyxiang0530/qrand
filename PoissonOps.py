@@ -144,7 +144,7 @@ def get_poisson_quarter(data_np, channel_in):
 
 # %%
 # compute big trapezoid, then iterate through little trapezoids until you get to desired area
-def cut_poisson(data_np, channel_in, plot = False):
+def cut_poisson_cdf(data_np, channel_in, plot = False):
     mu, poisson_cdf, poisson_pmf, xrange = get_poisson_var(data_np, channel_in)
     print(poisson_cdf[2000])
     pt1 = 56
@@ -167,6 +167,20 @@ def cut_poisson(data_np, channel_in, plot = False):
         plt.axvline(xrange[pt3], 0, 1, ls = "--")
 
     return pt1, pt2, pt3, xrange
+
+# %%
+def cut_poisson_pmf(data_np, channel_in, plot = False):
+    mu, poisson_cdf, poisson_pmf, xrange = get_poisson_var(data_np, channel_in)
+    pt1 = 0
+    pt2 = 0
+    pt3 = 0
+    running_area = 0
+
+    for i in range(1, len(poisson_pmf)):
+        chunk_area = np.trapz(poisson_pmf[i-1:i], x = xrange[i-1:i])
+        running_area += chunk_area
+
+    print(running_area)
 # %%
 dir = "data\\1129_bs_in_nofilter\\"
 file = dir + "run1.csv"
@@ -174,5 +188,5 @@ file = dir + "run1.csv"
 data_df, data_settings = cd.clean_csv(file)
 data_df.head()
 # %%
-cut_poisson(data_df, 3, plot = True)
+cut_poisson_pmf(data_df, 3)
 # %%
