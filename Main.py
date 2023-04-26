@@ -96,7 +96,7 @@ def main(csv_in):
 # format_for_tests(data_df, "3", "C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0915_initialtests\\run_1_binary.json")
 
 # %%
-gen_report("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_1007_robustness_tests\\laser\\change_over_time_test_laser.csv", "Laser Robustness Tests")
+gen_report("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\qrand\\data\\filter_tests\\3_6\\new_filter_bothpoiints_fix_clean.csv", "New Filter Tests")
 # main("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_0922_runs\\no_bs_down_convert_1.csv")
 # %%
 data_df, settings = cd.clean_csv("C:\\Users\\tyxia\\OneDrive - Pomona College\\Pomona\\randomness_proj\\data\\xiang_1007_robustness_tests\\laser\\change_over_time_test_laser.csv")
