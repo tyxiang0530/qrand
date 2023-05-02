@@ -9,6 +9,24 @@ import math
 
 reload(cd)
 reload(de)
+
+fsize = 15
+lsize = 10
+tdir = 'in'
+major = 5.0
+minor = 3.0
+style = 'default'
+
+plt.style.use(style)
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.size'] = fsize
+plt.rcParams['legend.fontsize'] = lsize
+plt.rcParams['xtick.direction'] = tdir
+plt.rcParams['ytick.direction'] = tdir
+plt.rcParams['xtick.major.size'] = major
+plt.rcParams['xtick.minor.size'] = minor
+plt.rcParams['ytick.major.size'] = major
+plt.rcParams['ytick.minor.size'] = minor
 # %%
 def fit_poisson(k, lamb):
     '''poisson function, parameter lamb is the fit parameter'''
@@ -162,6 +180,12 @@ def cut_poisson_cdf(data_np, channel_in, plot = False):
             
     if plot:
         plt.plot(xrange, poisson_pmf)
+        plt.ylabel("density")
+        plt.xlabel("photon counts")
+        plt.text(40,0.02,"00")
+        plt.text(45, 0.02, "01")
+        plt.text(50, 0.02, "10")
+        plt.text(55, 0.02, "11")
         plt.axvline(xrange[pt1], 0, 1, ls = "--")
         plt.axvline(xrange[pt2], 0, 1, ls = "--")
         plt.axvline(xrange[pt3], 0, 1, ls = "--")
@@ -188,5 +212,7 @@ file = dir + "run1.csv"
 data_df, data_settings = cd.clean_csv(file)
 data_df.head()
 # %%
-cut_poisson_pmf(data_df, 3)
+# cut_poisson_pmf(data_df, 3)
+# %%
+cut_poisson_cdf(data_df, 3, plot = True)
 # %%
