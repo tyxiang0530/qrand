@@ -282,17 +282,18 @@ We compare the results of the experiment with no filter, with the old filters,
 and with the new RG780 filters. We perform tests with the purple laser, a
 maglite torch, and an IR LED array.
 
+\subsection{Laser}
 For the laser, when analyzing initial counts over time, we observe the results
 shown in figure \ref{fig:filter_run}.
 \begin{figure}[H]%
     \centering
     \begin{subfigure}{.4\textwidth}
-    \includegraphics[width=5cm]{filter_ch1_laser.png}
+    \includegraphics[width=6cm]{filter_ch1_laser.png}
     \caption{ }
     \label{fig:lch1}
     \end{subfigure}
     \begin{subfigure}{.4\textwidth}
-    \includegraphics[width = 5cm]{filter_cc_laser.png}
+    \includegraphics[width = 6cm]{filter_cc_laser.png}
     \caption{ }
     \label{fig:lcc}
     \end{subfigure}
@@ -306,9 +307,186 @@ shown in figure \ref{fig:filter_run}.
 We observe that the variance in counts go down in accordance to 1 over the shot
 noise, and we see that the RG780 filter outperforms the current filter in
 regards to attenuation of the measured count numbers. The coincidence counts
-also decrease. A useful metric we can examine is
-\section{Defects in Current CCM and the FPGA CCM}
-\newpage
+also decrease.
+
+Another useful metric we can examine is the $\alpha$ value for each configuration.
+$\alpha$ is the anticorrelation parameter. For two detectors and a channel for coincidence measurement,
+we have
+\begin{equation}
+    \alpha_{2d} = \frac{R_c}{R^{(2r)}_{acc}}.
+\end{equation}
+Here, $R_{acc}$ denotes the rate of accidental coincidences and is defined to be
+\begin{equation}
+    R_{acc} = 2\tau R_1 R_2
+\end{equation}
+where $\tau$ is the coincidence window and $R_1$ and $R_2$ denote the count rates
+for channel 1 and channel 2. $R_c$ denotes the coincidence rate. For correlated sources, such as photon pairs arriving from SPDM, we expect $\alpha > 1$.
+For an uncorrelated source, such as white light from a torch, we expect $\alpha = 1$.
+
+For each of the filter configurations, we can calculate some $\alpha$ value, finding the
+results shown in table \ref{tab:alpha_laser}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Configuration} & \textbf{$\alpha$ Value} \\ \hline
+    No Filters             & 0.645                   \\ \hline
+    Current Filters        & 0.670                   \\ \hline
+    RG780                  & 0.764                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for various filter configurations with a laser photon source.}
+\end{table}\label{tab:alpha_laser}
+Curiously, for the laser source, we do not observe an $\alpha$ that is greater than 1, which is
+what we would expect for a correlated photon source. This defect will be addressed in section \ref{sec:ccm_broke}.
+However, with the new RG780 filter, we achieve a higher $\alpha$ value, indicating that the accidental coincidences
+from the experiment are decreases and we observe stronger correlation. This suggests that the RG780 filter outperforms
+our current filters.
+
+\subsection{Torch}
+We perform the same set of tests described above with a maglite torch. The torch serves
+as an uncorrelated photon source, and sends light outwards in a conal shape. We additionally test
+this configuration to understand how well the new filter performs in the presence of a source
+that primarily emits photons at a wavelength that is attenuated by the filter.
+
+We once again examine the counts over time and the coincidences measured, though in this test
+we omit the baseline filter-less case as the counts coming in are too high and excessively compress
+the axis of our plots. We observe the results shown in figure \ref{fig:torch_filters}.
+\begin{figure}[H]%
+    \centering
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width=6cm]{filter_ch1_torch.png}
+    \caption{ }
+    \label{fig:tch1}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width = 6cm]{filter_cc_torc.png}
+    \caption{ }
+    \label{fig:tcc}
+    \end{subfigure}
+    \caption{Figure \ref{fig:tch1} displays the count numbers measured over each
+    integration timestep for a set-up with old filters in both the
+    nose tube and following the output optical fiber and the RG780 filter in
+    both the nose tube and following the output optical fiber. Figure
+    \ref{fig:tcc} shows the coincidences measured in each configuration.}
+    \label{fig:torch_filters}
+\end{figure}
+Once again, we witness an attenuation in counts and in coincidences. For the case of the
+torch, we observe the $\alpha$ values shown in table \ref{tab:alpha_torch}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Configuration} & \textbf{$\alpha$ Value} \\ \hline
+    Current Filters        & 0.638                   \\ \hline
+    RG780                  & 0.677                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
+\end{table}\label{tab:alpha_torch}
+Interestingly, we once again observe results that contradict theory in that our $\alpha$ value
+is not close to 1. However, we do once again observe that the RG780 filters outperform the current filters
+in reducing the number of accidental coincidences and yielding a higher $\alpha$ value.
+
+\subsection{IR LED Array}
+We also examine the performance of our filters when an IR LED array is placed in front of
+our detectors. This varies from the torch in that the wavelength of photons emitted by
+the IR LED is a range the filter does not attenuate but the photon source once again only produces
+uncorrelated photons. We set-up our IR LED array in accordance with the schematic shown in figure \ref{fig:led_scheme}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 8cm]{IR_LED.jpg}
+    \caption{Schematic of IR LED array}
+    \label{fig:led_scheme}
+\end{figure}
+We perform the same measurements as those in the above sections and once again omit
+the filterless detector due to high counts. We observe the results shown in figure \ref{fig:ir_comp}.
+\begin{figure}[H]%
+    \centering
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width=6cm]{filter_ch1_IRled.png}
+    \caption{ }
+    \label{fig:irch1}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width = 6cm]{filter_cc_irled.png}
+    \caption{ }
+    \label{fig:ircc}
+    \end{subfigure}
+    \caption{Figure \ref{fig:irch1} displays the count numbers measured with the IR LED array set-up over each
+    integration timestep for a set-up with old filters in both the
+    nose tube and following the output optical fiber and the RG780 filter in
+    both the nose tube and following the output optical fiber. Figure
+    \ref{fig:ircc} shows the coincidences measured in each configuration.}
+    \label{fig:ir_comp}
+\end{figure}
+
+Interestingly, we observe that for the IR LED array, we observe a higher quantity of counts
+with the RG780 than with the old filters. This suggests that the RG780 filter attenuates
+the actual signal less, and has a steeper slope at the cutoff 780nm frequency. 
+
+When we examine the $\alpha$ values for this set-up, we observe the values shown in
+table \ref{tab:ir_cc}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Configuration} & \textbf{$\alpha$ Value} \\ \hline
+    Current Filters        & 0.66                   \\ \hline
+    RG780                  & 0.63                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
+\end{table}\label{tab:ir_cc}
+
+Here, we observe that the RG780 filter yields a lower $\alpha$ value than that of the 
+current filter, suggesting that it measures more accidental coincidences than the
+current filters. Though this is a negative, the strong cutoff and the high transmission of
+photons within the signal bandwidth demonstrates that the RG780 is a superior filter than the current filter.
+
+\section{Defects in Current Coincidence Counting Module (CCM)} \label{sec:ccm_broke}
+
+In the previous section, we observe a set of measured $\alpha$ values that do not align with
+theoretical results, namely the measurement of uncorrelated light yields $\alpha$s on the order of $10^{-1}$
+and the measurement of correlated sources does not yield $\alpha > 1$.
+
+We believe that this result is due to defects in the current coincidence counting module. To further
+investigate this result, we analyze the pulse-shaper and the channel-by-channel variance of the counter
+to better understand why this error may arise.
+
+\subsection{Coincidence Windows and the Pulse Shaper}
+
+We first analyze the pulse shaper in the CCM. The pulse shaper alters the waveform of a
+photon detection event, decreasing the pulsewidths (equivalent to the parameter $\tau$) to those shown in table \ref{tab:pulsewidths}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Pulsewidth Setting} & \textbf{Pulsewidth} \\ \hline
+    Short        & 10 $\pm$ 2.5ns                   \\ \hline
+    Medium        & 14 $\pm$ 2.7ns                   \\ \hline
+    Long        & 0.18 $\pm$ 2.8ns                   \\ \hline
+    Unaltered                  & 25ns                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
+\end{table}\label{tab:pulsewidths}
+Coincidences are measured by examing waveform overlaps between two
+detectors, and thus a decrease in pulsewidth may lead to a decrease in accidental coincidences,
+as two waveforms must arrive within a smaller increment of time for overlap,
+and subsequently coincidence to occur.
+
+We investigate the $\alpha$ values yielded for different pulsewidths.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Pulsewidth Setting} & \textbf{Pulsewidth} \\ \hline
+    Short        & 0.653                   \\ \hline
+    Medium        & 0.755                   \\ \hline
+    Long        & 0.748                   \\ \hline
+    Unaltered                  & 0.930                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
+\end{table}\label{tab:pulsewidths}
+\subsection{Channel Variance}
+\section{Altera DE-2 FPGA CCM}
 
 % -------------------------------------------------------------------------------------
 % REFERENCES

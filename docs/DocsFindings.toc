@@ -5,4 +5,10 @@
 \contentsline {subsection}{\numberline {0.4.1}Black Paper and Boxes}{8}{subsection.0.4.1}%
 \contentsline {subsection}{\numberline {0.4.2}Enclosures}{8}{subsection.0.4.2}%
 \contentsline {subsection}{\numberline {0.4.3}Filters}{10}{subsection.0.4.3}%
-\contentsline {section}{\numberline {0.5}Defects in Current CCM and the FPGA CCM}{11}{section.0.5}%
+\contentsline {subsection}{\numberline {0.4.4}Laser}{10}{subsection.0.4.4}%
+\contentsline {subsection}{\numberline {0.4.5}Torch}{12}{subsection.0.4.5}%
+\contentsline {subsection}{\numberline {0.4.6}IR LED Array}{12}{subsection.0.4.6}%
+\contentsline {section}{\numberline {0.5}Defects in Current Coincidence Counting Module (CCM)}{14}{section.0.5}%
+\contentsline {subsection}{\numberline {0.5.1}Coincidence Windows and the Pulse Shaper}{14}{subsection.0.5.1}%
+\contentsline {subsection}{\numberline {0.5.2}Channel Variance}{14}{subsection.0.5.2}%
+\contentsline {section}{\numberline {0.6}Altera DE-2 FPGA CCM}{14}{section.0.6}%
