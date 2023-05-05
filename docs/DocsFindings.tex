@@ -14,6 +14,7 @@
 \setlength{\topmargin}{0pt}
 \setlength{\marginparsep}{0pt}
 \setlength{\marginparwidth}{1in}
+\bibliographystyle{prsty}
 
 % -------------------------------------------------------------------------------------
 % BEGIN DOCUMENT
@@ -36,7 +37,7 @@
 All code and 3-D printing files can be found in the github resposity at \href{https://github.com/tyxiang0530/qrand}{https://github.com/tyxiang0530/qrand}.
 \section{Single Photon Detection Set-up}
 
-The basic set-up involves a helium-neon laser in the IR band driven into a BBO crystal. Photons that enter the BBO crystal from the laser
+The basic set-up is based on the single photon lab developed at Dickinson college \cite{photon_setup}, involves a helium-neon laser in the IR band driven into a BBO crystal. Photons that enter the BBO crystal from the laser
 undergo spontaneous parametric down-conversion and are then detected within two photon detectors, as shown in figure \ref{fig:spcm_setup_basic}.
 \begin{figure}[H]
     \centering
@@ -57,6 +58,9 @@ yield a set-up such as the one shown in figure \ref{fig:spcm_setup_bs}.
 This set-up will be the primary set-up used for the experiments and upgrades
 listed in the later sections. 
 
+Outputs from the detector set-up run to a single photon counter, the SPCM AQ4C.
+To perform coincidence counting, they are sent to a coincidence counting module (CCM)
+developed by Mark Beck \cite{beck_ccm}.
 
 \section{Photon Statistics and Randomness}
 
@@ -80,7 +84,7 @@ beam-splitter between A and A', another random bit can be generated.
 Furthermore, since photons are emitted from the laser in a Poissonian nature, we
 can split off a Poissonian distribution fitted to the count of arriving photons,
 assign buckets to each, and draw random bits in accordance to what bucket a
-time-step of photon counts falls into. This illustrated in figure
+time-step of photon counts falls into. This method is illustrated in figure
 \ref{fig:poisson}.
 \begin{figure}[H]
     \centering
@@ -100,17 +104,17 @@ the ports available on the SPCM-AQ4C module, a total bitrate of 10 bits per
 integration time-step can be achieved. In the generation of a password or
 security key, there are a total of 10 numbers, 40 symbols, 26 lower-case
 letters, and 26 upper-case letters to choose from, yielding a total of 102
-possible selections. A total of 7 bits can reach every single combination of
+possible selections. A total of 7 bits can reach every outcome of
 this, with $2^7 - 102 = 28$ additional mappings that are not used and can be
 overflowed to the next time-step. Each experimental time-step generates 10 bits,
 so we use 7 to generate a character and overflow the additional 3 bits as well
 as the additional mappings to the next time-step for efficiency. 
 
 We validate the random bits we generate with the NIST statistical test suite for
-random number generates. The NIST statistical test suite contains a series of
-tests utilized to determine the randomness of input number sequences. The
+random number generates \cite{nist_sts}. The NIST statistical test suite contains a series of
+tests utilized to determine the randomness of input number sequences \cite{sts_intro}. The
 results of the tests are shown in table \ref{tab:rng_test}, where a score of
-$8/10$ is considered passing.% TODO: CITE NIST
+$8/10$ is considered passing.
 
 \begin{table}[H]
     \centering
@@ -251,8 +255,9 @@ Physically, the enclosure is shown in figure \ref{fig:phys_enclose}.
 \end{figure}
 
 The cylindrical nose-tube is also designed to fit a filter, such as the FR
-RG780. When the enclosure was first designed, the current filter was used in the
-experiment. When these optimizations are applied to the basic experimental
+RG780. When the enclosure was first designed, a different filter was used in the
+experiment, and the experimental data we show later will be with the current filter, though a
+later section will go on to discuss the use of the FR RG780. When these optimizations are applied to the basic experimental
 set-up shown in figure \ref{fig:spcm_setup_basic}, we observe the results shown
 in figure \ref{fig:scatter_reduce}.
 \begin{figure}[H]%
@@ -293,9 +298,9 @@ down-converted photons (the signal).
 
 Filters that only enable light in the IR range to pass through are effective in
 reducing noise, as our laser operates in the IR range. At the beginning of the
-experiment, we utilized the filters of type $abcd$. An easy optimization we can
+experiment, we utilized a set of IR filters that were readily available in the lab. An easy optimization we can
 make to the experiment is to improve the quality of the filter. We test the FR
-RG780 in place of the $abcd$. The FR RG780 is a longpass filter with a filter
+RG780 in place of the current filters. The FR RG780 is a longpass filter with a filter
 profile that is shown in figure \ref{fig:filter_prof}.
 \begin{figure}[H]
     \centering
@@ -304,12 +309,12 @@ profile that is shown in figure \ref{fig:filter_prof}.
     \label{fig:filter_prof}
 \end{figure}
 
-We compare the results of the experiment with no filter, with the old filters,
+We compare the results of the experiment with no filter, with the current filters,
 and with the new RG780 filters. We perform tests with the purple laser, a
 maglite torch, and an IR LED array.
 
 \subsection{Laser}
-For the laser, when analyzing initial counts over time, we observe the results
+For the laser, when analyzing channel counts over time, we observe the results
 shown in figure \ref{fig:filter_run}.
 \begin{figure}[H]%
     \centering
@@ -324,7 +329,7 @@ shown in figure \ref{fig:filter_run}.
     \label{fig:lcc}
     \end{subfigure}
     \caption{Figure \ref{fig:lch1} displays the count numbers measured over each
-    integration timestep for a set-up with no filters, old filters in both the
+    integration timestep for a set-up with no filters, current filters in both the
     nose tube and following the output optical fiber, and the RG780 filter in
     both the nose tube and following the output optical fiber. Figure
     \ref{fig:lcc} shows the coincidences measured in each configuration.}
@@ -333,7 +338,7 @@ shown in figure \ref{fig:filter_run}.
 We observe that the variance in counts go down in accordance to 1 over the shot
 noise, and we see that the RG780 filter outperforms the current filter in
 regards to attenuation of the measured count numbers. The coincidence counts
-also decrease.
+also decrease. However, this is not enough to conclude that the RG780 filter is superior.
 
 Another useful metric we can examine is the $\alpha$ value for each configuration.
 $\alpha$ is the anticorrelation parameter. For two detectors and a channel for coincidence measurement,
@@ -346,7 +351,8 @@ Here, $R_{acc}$ denotes the rate of accidental coincidences and is defined to be
     R_{acc} = 2\tau R_1 R_2
 \end{equation}
 where $\tau$ is the coincidence window and $R_1$ and $R_2$ denote the count rates
-for channel 1 and channel 2. $R_c$ denotes the coincidence rate. For correlated sources, such as photon pairs arriving from SPDM, we expect $\alpha > 1$.
+for channel 1 and channel 2. $R_c$ denotes the coincidence rate. For correlated sources, 
+such as photon pairs arriving from the single photon counting module (SPCM), we expect $\alpha > 1$.
 For an uncorrelated source, such as white light from a torch, we expect $\alpha = 1$.
 
 For each of the filter configurations, we can calculate some $\alpha$ value, finding the
@@ -390,7 +396,7 @@ the axis of our plots. We observe the results shown in figure \ref{fig:torch_fil
     \label{fig:tcc}
     \end{subfigure}
     \caption{Figure \ref{fig:tch1} displays the count numbers measured over each
-    integration timestep for a set-up with old filters in both the
+    integration timestep for a set-up with current filters in both the
     nose tube and following the output optical fiber and the RG780 filter in
     both the nose tube and following the output optical fiber. Figure
     \ref{fig:tcc} shows the coincidences measured in each configuration.}
@@ -415,8 +421,8 @@ in reducing the number of accidental coincidences and yielding a higher $\alpha$
 \subsection{IR LED Array}
 We also examine the performance of our filters when an IR LED array is placed in front of
 our detectors. This varies from the torch in that the wavelength of photons emitted by
-the IR LED is a range the filter does not attenuate but the photon source once again only produces
-uncorrelated photons. We set-up our IR LED array in accordance with the schematic shown in figure \ref{fig:led_scheme}.
+the IR LED is in a range the filter does not attenuate. However, like the torch, the IR LED array source produces
+uncorrelated photons and differs from the HeNe laser. We set-up our IR LED array in accordance with the schematic shown in figure \ref{fig:led_scheme}.
 \begin{figure}[H]
     \centering
     \includegraphics[width = 8cm]{IR_LED.jpg}
@@ -438,7 +444,7 @@ the filterless detector due to high counts. We observe the results shown in figu
     \label{fig:ircc}
     \end{subfigure}
     \caption{Figure \ref{fig:irch1} displays the count numbers measured with the IR LED array set-up over each
-    integration timestep for a set-up with old filters in both the
+    integration timestep for a set-up with current filters in both the
     nose tube and following the output optical fiber and the RG780 filter in
     both the nose tube and following the output optical fiber. Figure
     \ref{fig:ircc} shows the coincidences measured in each configuration.}
@@ -446,8 +452,10 @@ the filterless detector due to high counts. We observe the results shown in figu
 \end{figure}
 
 Interestingly, we observe that for the IR LED array, we observe a higher quantity of counts
-with the RG780 than with the old filters. This suggests that the RG780 filter attenuates
-the actual signal less, and has a steeper slope at the cutoff 780nm frequency. 
+with the RG780 than with the current filters. This suggests that the RG780 filter attenuates
+the actual signal less, and has a steeper slope at the cutoff 780nm frequency. Ther current filter,
+though it is at a similar band to that of the RG780, attenuates signal that it is not supposed to attenuate
+at a higher rate, meaning it is likely an inferior filter and not as well made.
 
 When we examine the $\alpha$ values for this set-up, we observe the values shown in
 table \ref{tab:ir_cc}.
@@ -513,11 +521,11 @@ We investigate the $\alpha$ values yielded for different pulsewidths.
 \end{table}\label{tab:pulsewidths}
 We find these results to be quite odd. A scaling of $\alpha$ with the pulsewidth can be expected,
 as an increase in pulsewidth leads to an increase in coincidences, as pulses from the two detectors are now
-more likely to overlap. However, scaling at which this occurs, especially where medium and long equal one another
-, is rather strange and unexpected. This leads us to believe that there may something wrong with our pulse-shaping circuit.
+more likely to overlap. However, the scaling at which this occurs, especially where medium and long equal one another, is rather strange and unexpected. This leads us to believe that there may something wrong with our pulse-shaping circuit.
 
 We first validate the pulse-shaper settings by measuring output waveforms from the CCM on an oscilloscope.
-The pulsewidths are sound, and align well with the values we have in table \ref{tab:pulsewidths}.
+The pulsewidths are sound, and align well with the values we have in table \ref{tab:pulsewidths}. We
+next turn to investigating the channels of the CCM.
 
 \subsection{Channel Variance}
 
@@ -544,7 +552,8 @@ this is not the case.
 
 \section{Altera DE-2 FPGA CCM}
 
-We seek to develop an alternative coincidence counting unit with an Altera DE-2 FPGA CCM.
+Due to the age and myriad of issues that we have found in the current CCM,
+we seek to develop an alternative coincidence counting unit with an Altera DE-2 FPGA CCM.
 This is based upon the information provided from Mark Beck and their DE-2 coincidence unit.
 
 The Altera DE-2 is a design and education board with a wide variety of uses. We primarily leverage it
@@ -564,8 +573,7 @@ the schematic for our voltage divider shown in figure \ref{fig:divide}.
     \caption{Breakout board schematic.}
     \label{fig:divide}
 \end{figure}
-Signals enter into the circuit through four individual BNC inputs for each channel and exit
-exit through a ribbon cable and then into the DE-2
+Signals enter into the circuit through four individual BNC inputs for each channel and exit through a ribbon cable and then into the DE-2
 GPIO inputs. The full breakout board is shown in figure \ref{fig:bb}.
 \begin{figure}[H]%
     \centering
@@ -580,7 +588,7 @@ GPIO inputs. The full breakout board is shown in figure \ref{fig:bb}.
     \label{fig:circ}
     \end{subfigure}
     \caption{Figure \ref{fig:box} displays the enclosure for the breakout board circuit.
-    Figure \ref{fig:circ} displays the implemented breakout board circuit}.
+    Figure \ref{fig:circ} displays the implemented breakout board circuit}
     \label{fig:bb}
 \end{figure}
 
@@ -598,6 +606,11 @@ inputs in accordance to table \ref{tab:gpioin}.
     2        & 2 &    GPIO15              \\ \hline
     3      & 3 &        GPIO17         \\ \hline
     4      & 4 &          GPIO19       \\ \hline
+    gnd      & 4 &          GPIO12       \\ \hline
+    gnd     & 4 &          GPIO14       \\ \hline
+    gnd      & 4 &          GPIO16       \\ \hline
+    gnd      & 4 &          GPIO18       \\ \hline
+    gnd      & 4 &          GPIO20       \\ \hline
     \end{tabular}
     \caption{Table of channel inputs to ribbon cable and FPGA inputs}
 \end{table}\label{tab:gpioin}
@@ -662,11 +675,11 @@ experiments in quantum mechanics and has a greater applied bend. The lab setups 
 website and should be fairly straightforward to set up, though they will require some additional
 equipment.
 
-As for the random number generation component of this project, it would be Interesting
+As for the random number generation component of this project, it would be interesting
 for someone to take the random number generation capabilities of the current set-up and extend it
 to a remote web-app that enables users to remotely run experiments and generate passwords.
 This would likely involve the addition of some servos and controllers that allow a user to remotely
-toggle on and off the experiment, as well as taking the outputs of the labview program and directly
+toggle on and off the experiment, as well as take the outputs of the labview program and directly
 sending them into automated processing that directly turns the string of random numbers into a password that
 is then streamed to the user.
 
@@ -678,7 +691,7 @@ and also various methods of prevention, such as periodic re-calibration and vali
 % -------------------------------------------------------------------------------------
 % REFERENCES
 % -------------------------------------------------------------------------------------
-%\bibliography{}
+\bibliography{citations.bib}
 
 % -------------------------------------------------------------------------------------
 % END DOCUMENT

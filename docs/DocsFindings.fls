@@ -699,6 +699,10 @@ INPUT ./BB_attenuate.jpg
 INPUT BB_attenuate.jpg
 INPUT ./BB_attenuate.jpg
 INPUT ./BB_attenuate.jpg
+INPUT ./DocsFindings.bbl
+INPUT DocsFindings.bbl
+INPUT ./DocsFindings.bbl
+INPUT DocsFindings.bbl
 INPUT DocsFindings.aux
 INPUT ./DocsFindings.out
 INPUT ./DocsFindings.out
