@@ -1,4 +1,4 @@
-\documentclass[letterpaper, 11 pt]{book}
+\documentclass[letterpaper, 11 pt]{article}
 
 \usepackage{amsmath}  % needed for \tfrac, \bmatrix, etc.
 \usepackage{amsfonts} % needed for bold Greek, Fraktur, and blackboard bold
@@ -33,9 +33,7 @@
 % -------------------------------------------------------------------------------------
 % INTRODUCTION
 % -------------------------------------------------------------------------------------
-\section{Summary}
-\newpage
-
+All code and 3-D printing files can be found in the github resposity at \href{https://github.com/tyxiang0530/qrand}{https://github.com/tyxiang0530/qrand}.
 \section{Single Photon Detection Set-up}
 
 The basic set-up involves a helium-neon laser in the IR band driven into a BBO crystal. Photons that enter the BBO crystal from the laser
@@ -93,8 +91,9 @@ time-step of photon counts falls into. This illustrated in figure
 
 For example, taking an experiment fitted to the Poissonian displayed in figure
 \ref{fig:poisson}, if there are 40 incident photons, then we get an output
-bitstring of 01, if there are 45, we output 01, and so on. A poissonian can be
-drawn for each detector in the experiment.
+bitstring of 01, if there are 45, we output 01, and so on. A Poissonian can be
+drawn for each detector in the experiment. All software pertaining to the various
+Poissonian operations mentioned in this report can be found in the python file PoissonianOps.py.
 
 In an experiment with two beam-splitters and four detectors utilizing each of
 the ports available on the SPCM-AQ4C module, a total bitrate of 10 bits per
@@ -166,6 +165,15 @@ be noted that the passing of statistical tests is not a mathematically rigorous
 definition of "randomness". The set-up merely performs well on human-defined
 metrics of randomness.
 
+To ensure that our experimental set-up is running accordingly and that there is
+no systematic error that is causing non-Poissonian measurements, I have developed a
+python file Main.py that has a method gen\_report that automatically generates a report that fits a set of
+Poissonians to each randomness source we are relying on and investigates the fit.
+The report generated also enables the user to analyze the CDF of each channel, as well
+as a set of basic statistics for the given experimental run such as the count rate and the
+total counts over time.
+
+
 \section{Scattering Reduction}
 An additional improvement I have made to this experimental set-up is the
 development of multiple schemes to reduce scattering from background noise
@@ -190,10 +198,20 @@ arriving at the detectors.
 
 The additional pieces of paper along the beam-path as well as the box enclosure
 as shown in figure \ref{fig:paper_scatter}.
-\begin{figure}[H]
+\begin{figure}[H]%
     \centering
-    \includegraphics[width = 8cm]{poisson_cut.png}
-    \caption{Poissonian distribution segmented into regions of equal area. A bit combination is then assigned to each region.}
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width=7cm]{black_box.jpg}
+    \caption{ }
+    \label{fig:box}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width = 7cm]{black_surround.jpg}
+    \caption{ }
+    \label{fig:rail}
+    \end{subfigure}
+    \caption{Figure \ref{fig:box} shows the box that encloses the optical elements
+    and figure \ref{fig:rail} shows the additional black paper placed around the experiment.}
     \label{fig:paper_scatter}
 \end{figure}
 
@@ -224,8 +242,16 @@ the detector. The CAD designs are shown in figure \ref{fig:cad_enclose}.
         \label{fig:cad_enclose}
     \end{figure}
 
+Physically, the enclosure is shown in figure \ref{fig:phys_enclose}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 8cm]{enclose_phys.jpg}
+    \caption{Enclosure inserted into experiment.}
+    \label{fig:phys_enclose}
+\end{figure}
+
 The cylindrical nose-tube is also designed to fit a filter, such as the FR
-RG780. When the enclosure was first designed, the \_\_\_ filter was used in the
+RG780. When the enclosure was first designed, the current filter was used in the
 experiment. When these optimizations are applied to the basic experimental
 set-up shown in figure \ref{fig:spcm_setup_basic}, we observe the results shown
 in figure \ref{fig:scatter_reduce}.
@@ -273,7 +299,7 @@ RG780 in place of the $abcd$. The FR RG780 is a longpass filter with a filter
 profile that is shown in figure \ref{fig:filter_prof}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width = 8cm]{COLOR_FILT_XMIT_8_600w.png}
+    \includegraphics[width = 6cm]{COLOR_FILT_XMIT_8_600w.png}
     \caption{Filter profile of RG780 shown in green.}
     \label{fig:filter_prof}
 \end{figure}
@@ -462,7 +488,7 @@ photon detection event, decreasing the pulsewidths (equivalent to the parameter 
     \textbf{Pulsewidth Setting} & \textbf{Pulsewidth} \\ \hline
     Short        & 10 $\pm$ 2.5ns                   \\ \hline
     Medium        & 14 $\pm$ 2.7ns                   \\ \hline
-    Long        & 0.18 $\pm$ 2.8ns                   \\ \hline
+    Long        & 18 $\pm$ 2.8ns                   \\ \hline
     Unaltered                  & 25ns                   \\ \hline
     \end{tabular}
     \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
@@ -477,7 +503,7 @@ We investigate the $\alpha$ values yielded for different pulsewidths.
     \centering
     \begin{tabular}{|l|l|}
     \hline
-    \textbf{Pulsewidth Setting} & \textbf{Pulsewidth} \\ \hline
+    \textbf{Pulsewidth Setting} & \textbf{$\alpha$} \\ \hline
     Short        & 0.653                   \\ \hline
     Medium        & 0.755                   \\ \hline
     Long        & 0.748                   \\ \hline
@@ -485,9 +511,170 @@ We investigate the $\alpha$ values yielded for different pulsewidths.
     \end{tabular}
     \caption{Table of $\alpha$ values for various filter configurations with a torch photon source.}
 \end{table}\label{tab:pulsewidths}
+We find these results to be quite odd. A scaling of $\alpha$ with the pulsewidth can be expected,
+as an increase in pulsewidth leads to an increase in coincidences, as pulses from the two detectors are now
+more likely to overlap. However, scaling at which this occurs, especially where medium and long equal one another
+, is rather strange and unexpected. This leads us to believe that there may something wrong with our pulse-shaping circuit.
+
+We first validate the pulse-shaper settings by measuring output waveforms from the CCM on an oscilloscope.
+The pulsewidths are sound, and align well with the values we have in table \ref{tab:pulsewidths}.
+
 \subsection{Channel Variance}
+
+We continue to investigate the current CCM and analyze if there is any variance when the detectors
+are put into differing input channels. If some variance occurs, this would suggest that there is some
+inconsistency between the various inputs of the CCM. We put detectors A and B into channel 1 and 2,
+channel 2 and 3, and channel 3 and 4, with each taking measurements from the same experimental system.
+We measure $\alpha$ for each, observing the results shown in table \ref{tab:alpha_channelvar}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Pulsewidth Setting} & \textbf{$\alpha$} \\ \hline
+    1, 2 input        & 0.830                   \\ \hline
+    2, 3 input        & 0.651                   \\ \hline
+    3, 4 input        & 0.685                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for different channel inputs.}
+\end{table}\label{tab:alpha_channelvar}
+This drastic variance in $\alpha$ value suggests that there is something wrong with our CCM.
+Each experimental run takes measurement from the same system, and the CCM ought to process inputs
+from different channels in the same manner. However, we see that in the results shown in table \ref{tab:alpha_channelvar},
+this is not the case.
+
 \section{Altera DE-2 FPGA CCM}
 
+We seek to develop an alternative coincidence counting unit with an Altera DE-2 FPGA CCM.
+This is based upon the information provided from Mark Beck and their DE-2 coincidence unit.
+
+The Altera DE-2 is a design and education board with a wide variety of uses. We primarily leverage it
+for the Cyclone FPGA in the system and use it to count coincidences. Similar to the current CCM,
+the Altera FPGA can take in a set of ttl signals, check for overlap between the signals, and count coincidences.
+Like the current CCM, the Altera FPGA is easily programmable and has a high enough bit count to measure every possible
+combination of coincidences for a four input experiment (A, A', B, B').
+
+\subsection{Breakout Board}
+
+To convert the output TTL signals from the SPCM AQ4C, we need a breakout board to convert
+the output signals into 3.3V logic signals, which the Altera FPGA uses. To do this, we utilize
+the schematic for our voltage divider shown in figure \ref{fig:divide}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 8cm]{BB_schematic.jpg}
+    \caption{Breakout board schematic.}
+    \label{fig:divide}
+\end{figure}
+Signals enter into the circuit through four individual BNC inputs for each channel and exit
+exit through a ribbon cable and then into the DE-2
+GPIO inputs. The full breakout board is shown in figure \ref{fig:bb}.
+\begin{figure}[H]%
+    \centering
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width=6cm]{BB_box.jpg}
+    \caption{ }
+    \label{fig:box}
+    \end{subfigure}
+    \begin{subfigure}{.4\textwidth}
+    \includegraphics[width = 6cm]{filter_cc_irled.png}
+    \caption{ }
+    \label{fig:circ}
+    \end{subfigure}
+    \caption{Figure \ref{fig:box} displays the enclosure for the breakout board circuit.
+    Figure \ref{fig:circ} displays the implemented breakout board circuit}.
+    \label{fig:bb}
+\end{figure}
+
+It should be noted that there are only 4 GPIO pins that are used on the FPGA, and thus outputs
+from the voltage divider must be connected to the correct pins on the ribbon cable to ensure
+that the four GPIO pins are correctly addressed. Here, we use
+a raspberry pi ribbon cable, and thus each of the inputs must be sent to the raspberry pi ribbon cable
+inputs in accordance to table \ref{tab:gpioin}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Channel} & \textbf{Pi Input} & \textbf{FPGA Input} \\ \hline
+    1        & 1 &  GPIO13                 \\ \hline
+    2        & 2 &    GPIO15              \\ \hline
+    3      & 3 &        GPIO17         \\ \hline
+    4      & 4 &          GPIO19       \\ \hline
+    \end{tabular}
+    \caption{Table of channel inputs to ribbon cable and FPGA inputs}
+\end{table}\label{tab:gpioin}
+
+When this circuit is implemented, we observe that the signals from the SPCM AQ4C
+have been adequately attenuated to the correct levels, as shown in figure \ref{fig:signals}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 8cm]{BB_attenuate.jpg}
+    \caption{Attenuation of SPCM AQ4C output signals to 3.3V logic.}
+    \label{fig:signals}
+\end{figure}
+
+\subsection{Software}
+
+The software used to drive the Altera-based CCM (ACCM) is taken from Mark Beck's
+website. The advantage of the ACCM over the old CCM is that it can be modified for use
+with a wide variety of other experiments, such as testing Bell's inequality, local realism, single
+photon polarization states, and more. Some of the experiments require some additional upgrades
+in equipment, but the core software can all be executed on the ACCM.
+
+We validate the ACCM by performing a basic experiment with the maglite torch.
+We hook the ACCM up with the coincidence counting library in labview. Through the front panel,
+we observe that we are getting counts, and we also observe that we have count fluctuations that
+are consistent with expectations when the torch is moved around. We take data for three different positions
+of the maglite torch and observe some concerning results shown in table \ref{tab:fpga_res}.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Trial Number} & \textbf{$\alpha$} \\ \hline
+    1   & 36.43                  \\ \hline
+    2        & 62.70                   \\ \hline
+    3        & 42.10                   \\ \hline
+    \end{tabular}
+    \caption{Table of $\alpha$ values for different trials with the ACCM.}
+\end{table}\label{tab:fpga_res}
+These results are highly inconsistent with the outputs we expect for the torch source
+and suggest an excessive coincidence count. There are further issues in the ACCM that need to be fixed.
+
+\subsection{Possible Problems}
+
+Some additional refinements and improvements can be made to the ACCM setup to possibly
+resolve some of the problems that we have observed. One major improvement would be to
+design the voltage divider circuit in a CAD program such as Altium and create a PCB.
+The current circuit involves a somewhat unreliable and unrobust perfboard configuration that
+likely will not hold up to student use in the future and can be slightly unreliable. Issues in the
+breakout board can cause noisy extra counts or kill signal and is detrimental to the overall experiment.
+
+An additional area that can be investigated further with the ACCM is the labview software provided
+with the hardware. I have not been able to dig into the software too much, and have not found out a way
+to run tests with varied coincidence windows or with some of the other bells and whistles provided
+with the software. Perhaps the fine-tuning of certain settings could resolve the current issues
+with $\alpha$ measurements.
+
+\section{Extensions}
+
+Aside from the possible fixes to the ACCM setup, another major extension to the single photon experiment
+would be to try and utilize the full capabilities of the Altera board and implement some of the additional
+labs on Mark Beck's page. This could lead to the development of a full lab course that covers much more
+experiments in quantum mechanics and has a greater applied bend. The lab setups are all well-documented on Mark's
+website and should be fairly straightforward to set up, though they will require some additional
+equipment.
+
+As for the random number generation component of this project, it would be Interesting
+for someone to take the random number generation capabilities of the current set-up and extend it
+to a remote web-app that enables users to remotely run experiments and generate passwords.
+This would likely involve the addition of some servos and controllers that allow a user to remotely
+toggle on and off the experiment, as well as taking the outputs of the labview program and directly
+sending them into automated processing that directly turns the string of random numbers into a password that
+is then streamed to the user.
+
+Another set of fun extensions to the random number generation is to investigate how various
+attack schemes can alter the experiment. For instance, if the room were to be heated by an attacker,
+causing upwards laser drift and an increase in the Poissonian mean, then the output "random" bits
+would be biased towards a certain direction. One could explore various methods of attacking this experiment
+and also various methods of prevention, such as periodic re-calibration and validation of the set-up.
 % -------------------------------------------------------------------------------------
 % REFERENCES
 % -------------------------------------------------------------------------------------

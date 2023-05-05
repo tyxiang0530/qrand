@@ -1,8 +1,3 @@
-*number of points	100
-*time per step (seconds)	0.100000
-*average AB	6573.420000
-*standard dev. of AB	182.888672
-*comments	
 3_30_A	3_30_B	3_30_AB
 17565.000	41074.000	7052.000
 17339.000	41200.000	6953.000
