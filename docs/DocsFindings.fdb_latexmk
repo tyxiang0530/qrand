@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex DocsFindings"] 1683255522 "DocsFindings.aux" "DocsFindings.bbl" "DocsFindings" 1683255523 0
+["bibtex DocsFindings"] 1683346261 "DocsFindings.aux" "DocsFindings.bbl" "DocsFindings" 1683346505 0
   "./citations.bib" 1683255522 3028 8aaa284b16ed9e6f29d20a730486aae0 ""
   "./prsty.bst" 1683255262 19884 9f88e3ec0cc78e20f6bf8fd3df446b5a ""
-  "DocsFindings.aux" 1683255523 15166 db4f4d8db80708f7117fcbe0bfb8b6e5 "pdflatex"
+  "DocsFindings.aux" 1683346505 16066 dcef9da886cea09b98371cdcb84a9e0b "pdflatex"
   (generated)
   "DocsFindings.bbl"
   "DocsFindings.blg"
   (rewritten before read)
-["pdflatex"] 1683255522 "/Users/taixiang/Library/CloudStorage/OneDrive-PomonaCollege/Pomona/randomness_proj/qrand/docs/DocsFindings.tex" "DocsFindings.pdf" "DocsFindings" 1683255523 0
-  "/Users/taixiang/Library/CloudStorage/OneDrive-PomonaCollege/Pomona/randomness_proj/qrand/docs/DocsFindings.tex" 1683255384 36281 396f2509931181b755023ab61535b3c5 ""
+["pdflatex"] 1683346504 "/Users/taixiang/Library/CloudStorage/OneDrive-PomonaCollege/Pomona/randomness_proj/qrand/docs/DocsFindings.tex" "DocsFindings.pdf" "DocsFindings" 1683346505 0
+  "/Users/taixiang/Library/CloudStorage/OneDrive-PomonaCollege/Pomona/randomness_proj/qrand/docs/DocsFindings.tex" 1683346504 38058 e2fb3285332b45edbbb9b5245a3f1982 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -100,13 +100,15 @@
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
   "BB_attenuate.jpg" 1683249432 3156396 3c2969a7b8bbe32bfaffe7c86214187c ""
   "BB_box.jpg" 1683249517 1672583 253b9c8b3e2414003c5dabc3cbf8f627 ""
+  "BB_electronics.jpg" 1683345297 2160072 c935940b051ff8300ea09e980655de58 ""
   "BB_schematic.jpg" 1677611692 131245 6e822742e704d4fab86acb8d8b6230ed ""
   "COLOR_FILT_XMIT_8_600w.png" 1683043058 13840 811a679147a89d53ccb86527246b88e6 ""
-  "DocsFindings.aux" 1683255523 15166 db4f4d8db80708f7117fcbe0bfb8b6e5 "pdflatex"
-  "DocsFindings.bbl" 1683255522 528 90c2a87235972c6ab78f2419c14fa9a0 "bibtex DocsFindings"
-  "DocsFindings.out" 1683255523 2581 17ba6077a91cd516c0f79b326144085c "pdflatex"
-  "DocsFindings.tex" 1683255384 36281 396f2509931181b755023ab61535b3c5 ""
-  "DocsFindings.toc" 1683255523 1390 88e901d0be8e5094f8a2aab48cfa946b "pdflatex"
+  "DocsFindings.aux" 1683346505 16066 dcef9da886cea09b98371cdcb84a9e0b "pdflatex"
+  "DocsFindings.bbl" 1683346261 528 90c2a87235972c6ab78f2419c14fa9a0 "bibtex DocsFindings"
+  "DocsFindings.out" 1683346505 2780 55d93e71fe6b370582a96e2dd46cb0ba "pdflatex"
+  "DocsFindings.tex" 1683346504 38058 e2fb3285332b45edbbb9b5245a3f1982 ""
+  "DocsFindings.toc" 1683346505 1484 b242f81ad73bf5a88fc1f11fefbb1379 "pdflatex"
+  "FPGA.jpg" 1683345664 3084663 bfb134193cc10d7a0c00f3cb98b32b37 ""
   "IR_LED.jpg" 1683050374 81780 2cf8d97a761b561fe8365d916043ecc5 ""
   "black_box.jpg" 1683249419 2488741 8806fee665d7ee19a0744fcc80f9975e ""
   "black_surround.jpg" 1683249422 1687462 07662ade606122351fb11169fc9e1484 ""

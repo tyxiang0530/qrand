@@ -201,7 +201,7 @@ within it and does not leak out into the room and contaminate the photons
 arriving at the detectors. 
 
 The additional pieces of paper along the beam-path as well as the box enclosure
-as shown in figure \ref{fig:paper_scatter}.
+are shown in figure \ref{fig:paper_scatter}.
 \begin{figure}[H]%
     \centering
     \begin{subfigure}{.4\textwidth}
@@ -242,7 +242,9 @@ the detector. The CAD designs are shown in figure \ref{fig:cad_enclose}.
         \caption{Figure \ref{fig:side} displays the side view of the enclosure.
         Figure \ref{fig:back} shows a back view. The two-piece enclosure snaps
         together through two joints and can easily be taken apart. The
-        cylindrical nose must be glued on to the front of the enclosure.}
+        cylindrical nose must be glued on to the front of the enclosure. The enclosure
+        is modeled such that the two adjustment knobs for the detector can still be
+        accessed easily.}
         \label{fig:cad_enclose}
     \end{figure}
 
@@ -453,9 +455,14 @@ the filterless detector due to high counts. We observe the results shown in figu
 
 Interestingly, we observe that for the IR LED array, we observe a higher quantity of counts
 with the RG780 than with the current filters. This suggests that the RG780 filter attenuates
-the actual signal less, and has a steeper slope at the cutoff 780nm frequency. Ther current filter,
+the actual signal less, and has a steeper slope at the cutoff 780nm frequency. The current filter,
 though it is at a similar band to that of the RG780, attenuates signal that it is not supposed to attenuate
-at a higher rate, meaning it is likely an inferior filter and not as well made.
+at a higher rate, meaning it is likely an inferior filter and \begin{figure}[H]
+    \centering
+    \includegraphics[width = 8cm]{BB_attenuate.jpg}
+    \caption{Attenuation of SPCM AQ4C output signals to 3.3V logic.}
+    \label{fig:signals}
+\end{figure}not as well made.
 
 When we examine the $\alpha$ values for this set-up, we observe the values shown in
 table \ref{tab:ir_cc}.
@@ -521,7 +528,7 @@ We investigate the $\alpha$ values yielded for different pulsewidths.
 \end{table}\label{tab:pulsewidths}
 We find these results to be quite odd. A scaling of $\alpha$ with the pulsewidth can be expected,
 as an increase in pulsewidth leads to an increase in coincidences, as pulses from the two detectors are now
-more likely to overlap. However, the scaling at which this occurs, especially where medium and long equal one another, is rather strange and unexpected. This leads us to believe that there may something wrong with our pulse-shaping circuit.
+more likely to overlap. However, the scaling at which this occurs, especially where medium and long almost equal one another, is rather strange and unexpected. This leads us to believe that there may something wrong with our pulse-shaping circuit.
 
 We first validate the pulse-shaper settings by measuring output waveforms from the CCM on an oscilloscope.
 The pulsewidths are sound, and align well with the values we have in table \ref{tab:pulsewidths}. We
@@ -583,7 +590,7 @@ GPIO inputs. The full breakout board is shown in figure \ref{fig:bb}.
     \label{fig:box}
     \end{subfigure}
     \begin{subfigure}{.4\textwidth}
-    \includegraphics[width = 6cm]{filter_cc_irled.png}
+    \includegraphics[width = 6cm]{BB_electronics.jpg}
     \caption{ }
     \label{fig:circ}
     \end{subfigure}
@@ -602,15 +609,15 @@ inputs in accordance to table \ref{tab:gpioin}.
     \begin{tabular}{|l|l|l|}
     \hline
     \textbf{Channel} & \textbf{Pi Input} & \textbf{FPGA Input} \\ \hline
-    1        & 1 &  GPIO13                 \\ \hline
-    2        & 2 &    GPIO15              \\ \hline
-    3      & 3 &        GPIO17         \\ \hline
-    4      & 4 &          GPIO19       \\ \hline
-    gnd      & 4 &          GPIO12       \\ \hline
-    gnd     & 4 &          GPIO14       \\ \hline
-    gnd      & 4 &          GPIO16       \\ \hline
-    gnd      & 4 &          GPIO18       \\ \hline
-    gnd      & 4 &          GPIO20       \\ \hline
+    1        & GPIO22 &  GPIO13                 \\ \hline
+    2        & 3V3(under GPIO22) &    GPIO15              \\ \hline
+    3      & SPIMOSI &        GPIO17         \\ \hline
+    4      & SPIMISO &          GPIO19       \\ \hline
+    gnd      & GPIO18 &          GPIO12       \\ \hline
+    gnd     & GND (under GPIO18) &          GPIO14       \\ \hline
+    gnd      & GPIO23 &          GPIO16       \\ \hline
+    gnd      & GPIO24 &          GPIO18       \\ \hline
+    gnd      & GND (under GPIO24) &          GPIO20       \\ \hline
     \end{tabular}
     \caption{Table of channel inputs to ribbon cable and FPGA inputs}
 \end{table}\label{tab:gpioin}
@@ -623,6 +630,30 @@ have been adequately attenuated to the correct levels, as shown in figure \ref{f
     \caption{Attenuation of SPCM AQ4C output signals to 3.3V logic.}
     \label{fig:signals}
 \end{figure}
+
+\subsection{Integration and Programming}
+
+The data for the ACCM streams from the FPGA to a laptop through an RS232 connection.
+This can be cumbersome for modern machines, as most have phased out this older port.
+To deal with this, I recommend using either an older laptop or desktop that has this
+connector or to utilize a PCI-e card inserted into a desktop tower. We have tried a handful
+of alternatives, such as an RS232 to USB converter, but those typically run into driver
+issues and cannot be read by the software. The PCI-e card is the most reliable and modular
+method of resolving this issue.
+
+The ACCM with inputs coming in through a ribbon cable from the breakout board is shown in figure \ref{fig:accm}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 9cm]{FPGA.jpg}
+    \caption{ACCM with labeled logic blocks.}
+    \label{fig:accm}
+\end{figure}
+
+The outputs from channel 1, 2, 3, and 4 (A, B, A', B') are automatically streamed to the software.
+The additional coincidence circuits can be programmed through each of the four bit logic groups.
+Each group contains a switch that corresponds to channels A, B, A', or B'. Customizing coincidence
+measurements is as simple as flipping up the requisite channel switches (for example, to measure
+A--B coincidences, flip the A and B switch up and leave the A' and B' switch down in the labeled logic group).
 
 \subsection{Software}
 
@@ -657,7 +688,7 @@ Some additional refinements and improvements can be made to the ACCM setup to po
 resolve some of the problems that we have observed. One major improvement would be to
 design the voltage divider circuit in a CAD program such as Altium and create a PCB.
 The current circuit involves a somewhat unreliable and unrobust perfboard configuration that
-likely will not hold up to student use in the future and can be slightly unreliable. Issues in the
+likely will not hold up to student use in the future. Issues in the
 breakout board can cause noisy extra counts or kill signal and is detrimental to the overall experiment.
 
 An additional area that can be investigated further with the ACCM is the labview software provided
